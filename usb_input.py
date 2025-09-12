@@ -242,12 +242,16 @@ def volumeDownTen():
     print("Action: Volume Down 10")
     for i in range(10):
         volumeDown()
-    
+
 def volumeUpTen():
     """Handle volume up 10 command (hex: 20)."""
     print("Action: Volume Up 10")
     for i in range(10):
         volumeUp()
+
+def doNothing():
+    """Handle do nothing command (hex: 00)."""
+    pass
 
 def detect_hex_command(data):
     """Detect and execute commands based on hex data."""
@@ -257,7 +261,9 @@ def detect_hex_command(data):
     # Check first byte for command
     command_byte = data[0]
     
-    if command_byte == 0x01:
+    if command_byte == 0x00:
+        doNothing()
+    elif command_byte == 0x01:
         volumeUp()
     elif command_byte == 0x02:
         volumeDown()
@@ -270,7 +276,7 @@ def detect_hex_command(data):
     else:
         print(f"Unknown command: {command_byte:02x}")
         return False
-    
+
     return True
 
 def find_usb_device(vendor_id, product_id):
@@ -291,7 +297,7 @@ def read_usb_input(vendor_id=0x0483, product_id=0x572b):
     
     try:
         device = find_usb_device(vendor_id, product_id)
-        print(f"Found device: {device}")
+        print("Found USB volume controller.")
         
         try:
             # Detach kernel driver if active
@@ -327,35 +333,16 @@ def read_usb_input(vendor_id=0x0483, product_id=0x572b):
         if ep_in is None:
             raise ValueError("Input endpoint not found")
         
-        print(f"Reading from endpoint: 0x{ep_in.bEndpointAddress:02x}")
-        print(f"Max packet size: {ep_in.wMaxPacketSize} bytes")
-        print("Press Ctrl+C to stop...")
-        print("-" * 50)
+        print("Monitoring USB input (Press Ctrl+C to stop)...")
+        print("-" * 40)
         
         # Read data continuously
         while True:
             try:
                 data = device.read(ep_in.bEndpointAddress, ep_in.wMaxPacketSize, timeout=1000)
                 if data:
-                    hex_data = ' '.join(f'{x:02x}' for x in data)
-                    print(f"Raw: [{hex_data}] ({len(data)} bytes)")
-                    
                     # Detect and handle commands
-                    if detect_hex_command(data):
-                        print(f"Command detected and executed")
-                    
-                    # Try to interpret as HID data
-                    if len(data) >= 4:  # Typical HID report
-                        print(f"HID: modifier={data[0]:02x} reserved={data[1]:02x} keys={' '.join(f'{x:02x}' for x in data[2:])}")
-                    
-                    # Convert to string if it contains printable characters
-                    try:
-                        printable = ''.join(chr(x) if 32 <= x <= 126 else '.' for x in data)
-                        if any(32 <= x <= 126 for x in data):
-                            print(f"ASCII: {printable}")
-                    except:
-                        pass
-                    print()
+                    detect_hex_command(data)
                     
             except usb.core.USBTimeoutError:
                 # No data received, continue waiting
