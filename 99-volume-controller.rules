@@ -1,0 +1,3 @@
+# udev rule for USB device 0483:572b (volume controller)
+# This allows the user to access the device without sudo
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="572b", MODE="0666", GROUP="plugdev"
