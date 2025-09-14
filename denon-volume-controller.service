@@ -1,0 +1,16 @@
+[Unit]
+Description=Denon Volume Controller Service
+After=network.target
+
+[Service]
+Type=simple
+User=__USER__
+Group=__GROUP__
+ExecStart=/usr/local/bin/denon-volume-controller
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
