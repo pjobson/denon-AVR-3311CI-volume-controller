@@ -2,6 +2,16 @@
 
 This project is for controlling the Denon AVR-3311CI volume over HTTP using a STMicroelectronics USB MultiMedia Controller.
 
+![STMicroelectronics USB MultiMedia Controller](https://raw.githubusercontent.com/pjobson/denon-AVR-3311CI-volume-controller/refs/heads/main/images/STMicroelectronics_USB_MultiMedia_Controller.jpg  "STMicroelectronics USB MultiMedia Controller")
+
+![Denon AVR-3311CI](https://raw.githubusercontent.com/pjobson/denon-AVR-3311CI-volume-controller/refs/heads/main/images/Denon_AVR-3311CI.jpg "Denon AVR-3311CI")
+
+## Notes
+
+The Denon AVR-3311CI uses an old GoAhead-Webs server to which you can configure you unit with. This project basically sends HTTP requests to the server to manipulate the volume and mute.
+
+![Denon Web Interface](https://raw.githubusercontent.com/pjobson/denon-AVR-3311CI-volume-controller/refs/heads/main/images/Denon_Web_Interface.png  "Denon Web Interface")
+
 ## Features
 
 - Volume up/down control with configurable limits
