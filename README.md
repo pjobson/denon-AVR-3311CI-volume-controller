@@ -21,9 +21,10 @@ This project is for controlling the Denon AVR-3311CI volume over HTTP using a ST
 
 1. **Clone or download** this repository
 2. **Run the installer** (will prompt for configuration):
-   ```bash
-   ./install.sh
-   ```
+
+```bash
+./install.sh
+```
 
 The installer will:
 
@@ -32,6 +33,7 @@ The installer will:
 - Prompt for your receiver's IP address
 - Prompt for minimum and maximum volume levels (-80.5 to 80.5)
 - Create configuration files in `~/.config/denon/`
+- Adds a systemd service
 
 ## Configuration Files
 
@@ -42,19 +44,43 @@ After installation, configuration is stored in:
 
 ## Usage
 
-**Start the volume controller**:
-   bash ./usb_input.py
+You can use the denon-volume-controller in two ways:
 
-**USB Device Commands**:
+### Option 1: Run directly
 
-   - `0x01`: Volume Up
-   - `0x02`: Volume Down
-   - `0x04`: Mute Toggle
-   - `0x10`: Volume Down 10 steps
-   - `0x20`: Volume Up 10 steps
-   - `0x00`: Do Nothing
+```bash
+./denon-volume-controller
+```
 
-**Stop the controller**: Press `Ctrl+C`
+### Option 2: Use systemd service
+
+```bash
+# Start the service
+sudo systemctl start denon-volume-controller
+
+# Enable to start on boot
+sudo systemctl enable denon-volume-controller
+
+# Check service status
+sudo systemctl status denon-volume-controller
+
+# Stop the service
+sudo systemctl stop denon-volume-controller
+
+# Show the log
+sudo journalctl -f -u denon-volume-controller
+```
+
+### USB Device Commands
+
+- `0x01`: Volume Up
+- `0x02`: Volume Down
+- `0x04`: Mute Toggle
+- `0x10`: Volume Down 10 steps
+- `0x20`: Volume Up 10 steps
+- `0x00`: Do Nothing
+
+**Stop the controller**: Press `Ctrl+C` (when running directly)
 
 ## Volume Limits
 
@@ -63,20 +89,22 @@ The controller respects the minimum and maximum volume limits set during install
 ## Troubleshooting
 
 ### Permission Issues
+
 - Ensure you're in the `plugdev` group: `groups $USER`
 - Log out and back in after installation
 - Check udev rules are installed: `ls /etc/udev/rules.d/*volume*`
 
 ### Network Issues
+
 - Verify receiver IP address in `~/.config/denon/config.json`
 - Ensure receiver is powered on and connected to network
 - Test connectivity: `ping <receiver_ip>`
 
 ### USB Device Issues  
+
 - Check device is connected: `lsusb | grep 0483:572b`
 - Verify udev rules are active: `sudo udevadm trigger`
 
 ## Technical Details
 
 This project could potentially be adapted to work with other Denon receivers and USB input devices by modifying the USB vendor/product IDs and HTTP endpoints.
-
