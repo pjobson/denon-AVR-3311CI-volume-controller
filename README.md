@@ -59,25 +59,39 @@ You can use the denon-volume-controller in two ways:
 ### Option 1: Run directly
 
 ```bash
-./denon-volume-controller
+/usr/local/bin/denon-volume-controller
 ```
+
+To stop use: `CTRL-C`
 
 ### Option 2: Use systemd service
 
+#### Start the service
 ```bash
-# Start the service
 sudo systemctl start denon-volume-controller
+```
 
-# Enable to start on boot
+#### Enable to start on boot
+
+```bash
 sudo systemctl enable denon-volume-controller
+```
 
-# Check service status
+#### Check service status
+
+```bash
 sudo systemctl status denon-volume-controller
+```
 
-# Stop the service
+#### Stop the service
+
+```bash
 sudo systemctl stop denon-volume-controller
+```
 
-# Show the log
+#### Show the log
+
+```bash
 sudo journalctl -f -u denon-volume-controller
 ```
 
@@ -89,8 +103,6 @@ sudo journalctl -f -u denon-volume-controller
 - `0x10`: Volume Down 10 steps
 - `0x20`: Volume Up 10 steps
 - `0x00`: Do Nothing
-
-**Stop the controller**: Press `Ctrl+C` (when running directly)
 
 ## Volume Limits
 
