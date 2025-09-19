@@ -33,16 +33,29 @@ mkdir -p "$HOME/.config/denon"
 
 # Check if original user is in plugdev group
 if ! groups $USER | grep -q '\bplugdev\b'; then
+    echo "----------"
     echo "Adding user $USER to plugdev group (required for USB device access)..."
     sudo usermod -a -G plugdev $USER
     echo "User added to plugdev group. You will need to log out and back in for this to take effect."
+    echo "----------"
 fi
 
 # Install udev rules
+echo "----------"
 echo "Installing udev rules..."
 sudo cp ./99-volume-controller.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 sudo udevadm trigger
+echo "----------"
+echo ""
+
+# Update grub disable usb autosuspend
+echo "----------"
+echo "Update grub disable usb autosuspend"
+sudo sed -i 's/noquiet/noquiet usbcore.autosuspend=-1/' /etc/default/grub
+sudo update-grub
+echo "----------"
+echo ""
 
 # Check if config already exists and has content
 if [ -f "$HOME/.config/denon/config.json" ] && [ $(stat -c%s "$HOME/.config/denon/config.json" 2>/dev/null || echo 0) -gt 10 ]; then
@@ -106,8 +119,11 @@ sudo ln -sf /opt/denon-volume-controller/run.sh /usr/local/bin/denon-volume-cont
 # First: update the user and group
 sed -i "s/__USER__/${USER}/" denon-volume-controller.service
 sed -i "s/__GROUP__/${USER}/" denon-volume-controller.service
+# Next: copy the service and reload the daemon
 sudo cp denon-volume-controller.service /etc/systemd/system/denon-volume-controller.service
 sudo systemctl daemon-reload
+# enable the service and start it
+sudo systemctl enable denon-volume-controller.service
 sudo systemctl start denon-volume-controller.service
 
 echo "Installation complete!"
