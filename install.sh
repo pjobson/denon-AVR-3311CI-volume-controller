@@ -103,6 +103,9 @@ echo "{\"receiver_ip\": \"$receiver_ip\", \"min_volume\": $min_volume, \"max_vol
 sudo ln -sf /opt/denon-volume-controller/run.sh /usr/local/bin/denon-volume-controller
 
 # Add the service to systemd
+# First: update the user and group
+sed -i "s/__USER__/${USER}/" denon-volume-controller.service
+sed -i "s/__GROUP__/${USER}/" denon-volume-controller.service
 sudo cp denon-volume-controller.service /etc/systemd/system/denon-volume-controller.service
 sudo systemctl daemon-reload
 sudo systemctl start denon-volume-controller.service
